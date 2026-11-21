@@ -31,4 +31,6 @@ jobs:
         run: ruff check .
 
       - name: Run tests
+        env:
+          POSTGRES_PASSWORD: test-password
         run: python -m pytest tests/unit/test_main.py -v

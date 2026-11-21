@@ -1,3 +1,7 @@
+import os
+
+os.environ.setdefault("POSTGRES_PASSWORD", "test-password")
+
 from unittest.mock import MagicMock, patch
 
 from fastapi.testclient import TestClient
