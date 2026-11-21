@@ -17,19 +17,10 @@ monitoring, Kubernetes and GitOps.
 
 - [x] Repository created
 - [x] Docker Engine and Docker Compose installed
-- [ ] REST API implemented
-- [ ] Automated tests
-- [ ] Docker image and container
+- [x] REST API implemented
+- [x] Automated tests
+- [x] Docker image and container
 - [ ] PostgreSQL integration
 - [ ] CI/CD pipeline
 - [ ] Monitoring and logging
 - [ ] Kubernetes and GitOps
-
-## Local development
-
-Instructions will be added as the application is implemented.
-
-## Security
-
-Never commit real credentials, tokens, or `.env` files.
-Use `.env.example` to document required configuration variables.
