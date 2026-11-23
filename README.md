@@ -20,7 +20,8 @@ monitoring, Kubernetes and GitOps.
 - [x] REST API implemented
 - [x] Automated tests
 - [x] Docker image and container
-- [ ] PostgreSQL integration
+- [x] PostgreSQL integration
+- [x] Kubernetes deployment and persistent storage
+- [ ] GitOps
 - [ ] CI/CD pipeline
 - [ ] Monitoring and logging
-- [ ] Kubernetes and GitOps
