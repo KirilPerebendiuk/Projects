@@ -16,6 +16,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/kirilperebendiuk/projects:main
+          imagePullPolicy: Always
           ports:
             - containerPort: 2222
           env:
