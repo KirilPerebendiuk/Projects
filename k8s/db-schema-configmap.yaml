@@ -1,8 +1,4 @@
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: task-db-schema
-  namespace: task-platform
 data:
   schema.sql: |
     CREATE TABLE IF NOT EXISTS tasks (
@@ -12,3 +8,7 @@ data:
         status VARCHAR(50) NOT NULL DEFAULT 'pending',
         created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
+kind: ConfigMap
+metadata:
+  name: task-db-schema
+  namespace: task-platform
