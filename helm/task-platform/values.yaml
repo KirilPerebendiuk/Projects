@@ -2,7 +2,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 api:
-  replicaCount: 1
+  replicaCount: 2
   image:
     repository: ghcr.io/kirilperebendiuk/projects
     tag: sha-9f45a13
