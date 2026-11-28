@@ -1,3 +1,4 @@
+
 name: Docker Publish
 
 on:
@@ -7,7 +8,7 @@ on:
     branches: ["main"]
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -16,10 +17,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout application source
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Prepare image tag
+        id: vars
+        env:
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: echo "short_sha=${SOURCE_SHA:0:7}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -31,19 +38,41 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=raw,value=main
-            type=sha
-
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ghcr.io/${{ github.repository }}:main
+            ghcr.io/${{ github.repository }}:sha-${{ steps.vars.outputs.short_sha }}
+
+      - name: Checkout GitOps configuration
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: gitops
+          persist-credentials: true
+
+      - name: Update Helm image tag
+        working-directory: gitops
+        env:
+          SHORT_SHA: ${{ steps.vars.outputs.short_sha }}
+        run: |
+          set -euo pipefail
+
+          sed -i -E \
+            "0,/tag: sha-[[:xdigit:]]+/s//tag: sha-${SHORT_SHA}/" \
+            helm/task-platform/values.yaml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add helm/task-platform/values.yaml
+
+          if git diff --cached --quiet; then
+            echo "Helm image tag is already up to date."
+          else
+            git commit -m "chore(gitops): deploy sha-${SHORT_SHA}"
+            git push origin HEAD:main
+          fi
